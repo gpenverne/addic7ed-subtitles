@@ -3,6 +3,7 @@
 namespace Gpenverne\Addic7edSubtitlesBundle\Service;
 
 use Alc\Addic7edCli\Component\HttpClient;
+use Alc\Addic7edCli\Component\SubtitleSelector;
 use Alc\Addic7edCli\Database\Addic7edDatabase;
 
 class Addic7edSubtitlesClient
@@ -27,13 +28,15 @@ class Addic7edSubtitlesClient
      */
     public function getSubtitles($query, $season, $episod, $language = 'English')
     {
+        $returnedSubtitles = [];
         $subtitles = $this->getDatabase()->find($query, $language, $season, $episod);
         foreach ($subtitles as $subtitle) {
             $request = $this->getClient()->request('GET', $subtitle->url);
             $subtitle->content = $request->getBody()->getContents();
+            $returnedSubtitles[] = $subtitle;
         }
 
-        return $subtitle;
+        return $returnedSubtitles;
     }
 
     /**
