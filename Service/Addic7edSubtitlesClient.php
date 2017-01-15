@@ -3,29 +3,41 @@
 namespace Gpenverne\Addic7edSubtitlesBundle\Service;
 
 use Alc\Addic7edCli\Component\HttpClient;
-use Alc\Addic7edCli\Component\SubtitleSelector;
 use Alc\Addic7edCli\Database\Addic7edDatabase;
 
 class Addic7edSubtitlesClient
 {
     /**
-     * @var Addic7edDatabase
+     * @var HttpClient
      */
     protected $client;
 
     /**
-     * @param  string  $filename
-     * @param  boolean $download
-     *
-     * @return
+     * @var Addic7edDatabase
      */
-    public function getSubtitles($query, $language = 'en')
+    protected $database;
+
+    /**
+     * @param  string $query
+     * @param  int    $season
+     * @param  int    $episod
+     * @param  string $language
+     *
+     * @return array
+     */
+    public function getSubtitles($query, $season, $episod, $language = 'English')
     {
-        return $this->getClient()->find($query, $language);
+        $subtitles = $this->getDatabase()->find($query, $language, $season, $episod);
+        foreach ($subtitles as $subtitle) {
+            $request = $this->getClient()->request('GET', $subtitle->url);
+            $subtitle->content = $request->getBody()->getContents();
+        }
+
+        return $subtitle;
     }
 
     /**
-     * @return SubtitlesFinder
+     * @return Client
      */
     protected function getClient()
     {
@@ -34,9 +46,22 @@ class Addic7edSubtitlesClient
         }
 
         $client = new HttpClient();
-        $client = $client->getClient();
-        $this->client = new Addic7edDatabase($client);
+        $this->client = $client->getClient();
 
         return $this->client;
+    }
+
+    /**
+     * @return Addic7edDatabase
+     */
+    public function getDatabase()
+    {
+        if (null !== $this->database) {
+            return $this->database;
+        }
+
+        $this->database = new Addic7edDatabase($this->getClient());
+
+        return $this->database;
     }
 }
