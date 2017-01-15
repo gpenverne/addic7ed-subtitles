@@ -1,0 +1,3 @@
+services:
+    addic7edsubtitles_api:
+        class: Gpenverne\Addic7edSubtitlesBundle\Service\Addic7edSubtitlesClient

@@ -1,0 +1,23 @@
+{
+    "name": "gpenverne/addic7ed-subtitles",
+    "type": "library",
+    "description": "A bundle for alc/addic7ed-cli",
+    "keywords": ["addic7ed", "api", "subtitles"],
+    "license": "MIT",
+    "authors": [{
+        "name": "Gpenverne",
+        "homepage": "https://github.com/gpenverne"
+    }],
+    "require": {
+        "php": ">=5.4",
+        "symfony/dependency-injection": "*",
+        "alc/addic7ed-cli": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Gpenverne\\Addic7edSubtitlesBundle\\": ""
+        }
+    }
+}
